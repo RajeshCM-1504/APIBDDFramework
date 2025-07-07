@@ -1,3 +1,4 @@
+import allure
 import json
 import time
 from behave import *
