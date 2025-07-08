@@ -1,25 +1,65 @@
-pipeline {
-  agent any
-  stages {
-    stage('version') {
-      steps {
-        sh 'python3 --version'
-      }
+pipeline{
+    agent any
+    environment {
+        JAVA_HOME = '/opt/homebrew/opt/openjdk@17'
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+
     }
-stage('Install Python Requirements') {
+    stages {
+        stage('Github Handshake'){
+            steps{
+                cleanWs()
+                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'cd7336a7-41bd-431e-a4ba-fa38c6c68219', url: 'https://github.com/RajeshCM-1504/APIBDDFramework.git']])
+
+            }
+            }
+        stage('Import Libraries') {
       steps {
-        sh '''
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-        '''
-      }
+        sh 'python3 -m pip install -r requirements.txt'
+        sh 'python3 -m pip install html-testRunner'
+        sh 'python3 -m pip install behave'
+        sh 'python3 -m behave --version'
+        sh 'python3 -m pip install allure-behave'
+        sh 'python3 -m behave -f allure_behave.formatter:AllureFormatter -o allure-results'
+
+      }}
+        stage("Allure Reports") {
+    steps {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    commandline: 'allure',
+                    results: [[path: 'allure-results']]
+                        ])
+
+            }
+        }
+        stage('Zip Allure Report') {
+            steps {
+
+                sh 'zip -r allure-report.zip allure-report'
+                sh 'ls -lh allure-report.zip'
+            }
+        }
+
+        stage("mail") {
+            steps {
+                emailext(
+                    subject: "Allure Report - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body:  """
+        Hi Team,
+        The Jenkins job has completed. Please find the report attached.
+        Build Number: ${env.BUILD_NUMBER}
+        Job: ${env.JOB_NAME}
+    """,
+                    to: 'cmrajesh1504@gmail.com',
+                    attachmentsPattern: '**/allure-report.zip',
+                    mimeType: 'text/plain'
+
+                )
+            }
+        }
+
     }
-    stage('hello') {
-      steps {
-        sh 'behave -f allure_behave.formatter:AllureFormatter -o allure-results'
-      }
-    }
-  }
+
 }

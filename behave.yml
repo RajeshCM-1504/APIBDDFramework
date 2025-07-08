@@ -1,0 +1,5 @@
+behave:
+  no_capture: true
+  format: allure_behave.formatter:AllureFormatter
+  outfile:
+    allure_behave.formatter:AllureFormatter: allure-results
