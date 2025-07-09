@@ -1,4 +1,5 @@
 # Created by rajeshcm at 08/07/25
+@smoke
 Feature: Getting stadiums based on multiple parameters
   # This is to get data for the API stadiums information
 

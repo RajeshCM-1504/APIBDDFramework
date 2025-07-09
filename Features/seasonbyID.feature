@@ -1,4 +1,4 @@
-
+@regression
 Feature: Getting specific season based on ID
   # This is to get data for the specific season API
 

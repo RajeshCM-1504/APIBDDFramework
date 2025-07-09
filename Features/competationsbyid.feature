@@ -1,4 +1,5 @@
 # Created by rajeshcm at 08/07/25
+@regression
 Feature: Getting competations based on ID
   # This is to get data for the API getcompetationsID
 

@@ -1,4 +1,5 @@
 # Created by rajeshcm at 04/07/25
+@smoke
 Feature: Getting competations names
   # This is to get data for the API getcompetations
 

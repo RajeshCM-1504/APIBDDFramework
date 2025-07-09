@@ -1,4 +1,5 @@
 # Created by rajeshcm at 08/07/25
+@regression
 Feature: Getting seasons based on ID
   # This is to get data for the API getcompetationsID
 
